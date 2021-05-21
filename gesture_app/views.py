@@ -18,4 +18,4 @@ def Navigate(request):
     pg.write('f:\n',0.2)
     pg.write('cd F:\Final Year Project\Hand Gesture3\n',0.2)
     pg.write('python hand_gesture_youtube.py\n',0.2)
-    return render(request,"HomePage.html")
+    return redirect('index')
