@@ -5,7 +5,7 @@ import pyautogui as pg
 def index(request):
     return render(request, "HomePage.html")
 
-def Navigate(request):
+def Navigate_Vedio(request):
     pg.hotkey('winleft')
     pg.typewrite('Movies\n',0.2)
     pg.press('enter')
@@ -18,4 +18,17 @@ def Navigate(request):
     pg.write('f:\n',0.2)
     pg.write('cd F:\Final Year Project\Hand Gesture3\n',0.2)
     pg.write('python hand_gesture_youtube.py\n',0.2)
+    return redirect('index')
+
+def Navigate_Player(request):
+    pg.hotkey('winleft')
+    pg.typewrite('PowerPoint\n',0.2)
+    pg.press('enter')
+
+    pg.hotkey('winleft')
+    pg.typewrite('Command\n',0.2)
+    pg.press('enter')
+    pg.write('f:\n',0.2)
+    pg.write('cd F:\Final Year Project\Hand Gesture3\n',0.2)
+    pg.write('python power_point.py\n',0.2)
     return redirect('index')
