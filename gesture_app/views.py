@@ -97,7 +97,7 @@ def Navigate_Vedio(request):
 
         elif count_defects == 4:
             pg.press("volumemute",interval=1)
-            cv2.putText(img, "Mute", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
+            cv2.putText(img, "Mute/Unmute", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
 
         else:
             cv2.putText(img,"NONE",(50,50),cv2.FONT_HERSHEY_SIMPLEX,2,2)
