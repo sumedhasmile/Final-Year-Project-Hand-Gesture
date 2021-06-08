@@ -80,9 +80,6 @@ def Navigate_Vedio(request):
                 count_defects += 1
                 cv2.circle(crop_img,far,3,[0,0,255],-1)
             
-            if angle == 90:
-                count_defects =-1
-                cv2.circle(crop_img,far,3,[255,0,0],-1)
             cv2.line(crop_img,start,end,[0,255,0], 2)
         
         if count_defects == 1:
@@ -101,11 +98,6 @@ def Navigate_Vedio(request):
         elif count_defects == 4:
             pg.press("volumemute",interval=1)
             cv2.putText(img, "Mute", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
-            
-        elif count_defects==-1:
-            pg.press("esc")
-            cv2.putText(img, "ESCAPE", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
-            break
 
         else:
             cv2.putText(img,"NONE",(50,50),cv2.FONT_HERSHEY_SIMPLEX,2,2)
