@@ -1,10 +1,17 @@
+
+
 from django.shortcuts import redirect, render
 import cv2
-from cv2 import version
+import os
 import numpy as np
 import math
 import pyautogui as pg
+from . import HandTrackingModule as htm  
 
+########################
+brushThickness =15
+eraserThickness =100
+########################
 # Create your views here.
 def index(request):
     return render(request, "HomePage.html")
@@ -57,7 +64,6 @@ def Navigate_Vedio(request):
 
         defects = cv2.convexityDefects(cnt,hull)
         count_defects = 0
-        count=0
         cv2.drawContours(thresh1,contours,-1,(0,255,0),3)
 
 
@@ -84,23 +90,23 @@ def Navigate_Vedio(request):
         
         if count_defects == 1:
             pg.press("space",interval=1)              
-            cv2.putText(img, "Play/Pause", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
+            cv2.putText(img, "Play/Pause", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 10)
             
         
         elif count_defects == 2:
             pg.press("volumeup")
-            cv2.putText(img, "Volume Up", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
+            cv2.putText(img, "Volume Up", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 10)
             
         elif count_defects == 3:
             pg.press("volumedown")
-            cv2.putText(img, "Volume Down", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)  
+            cv2.putText(img, "Volume Down", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 10)  
 
         elif count_defects == 4:
             pg.press("volumemute",interval=1)
-            cv2.putText(img, "Mute/Unmute", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
+            cv2.putText(img, "Mute/Unmute", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 10)
 
         else:
-            cv2.putText(img,"NONE",(50,50),cv2.FONT_HERSHEY_SIMPLEX,2,2)
+            cv2.putText(img,"NONE",(50,50),cv2.FONT_HERSHEY_SIMPLEX,2,10)
             
 
         cv2.imshow("Gesture", img)
@@ -190,12 +196,12 @@ def Navigate_Player(request):
             cv2.line(crop_img,start,end,[0,255,0], 2)
         if count_defects == 1:
             pg.press("left",interval=0.5)              
-            cv2.putText(img, "Left", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
+            cv2.putText(img, "Left", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 10)
         elif count_defects == 2:
             pg.press("right",interval=0.5)              
-            cv2.putText(img, "Right", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
+            cv2.putText(img, "Right", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 10)
         elif count_defects == 3:
-            cv2.putText(img, "Escape", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
+            cv2.putText(img, "Escape", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, 10)
             pg.press('sleep',interval=1)
             pg.press("esc")
             break
@@ -220,4 +226,108 @@ def Navigate_Player(request):
             break
     cap.release()
     cv2.destroyAllWindows()        
+    return redirect('index')
+
+def PaintWindow(request):
+
+######################
+
+    folderPath = "F:\Final Year Project\Hand-Gesture-Web\hand_gesture_app\gesture_app\Header"
+    myList = os.listdir(folderPath)
+    print(myList)
+    overlayList =[]
+    for imPath in myList:
+        image = cv2.imread(f'{folderPath}/{imPath}')
+        overlayList.append(image)
+    print(len(overlayList))
+    header = overlayList[0]
+
+    drawColor = (0,0,255)
+
+    cap = cv2.VideoCapture(0)
+    cap.set(3,900)
+    cap.set(4,720)
+
+    detector = htm.handDetector(detectionCon=0.85)
+    xp,yp=0,0
+    imgCanvas = np.zeros((480,640,3),np.uint8)
+
+    while True:
+        # 1. Import Image
+        success,img = cap.read()
+        img = cv2.flip(img,1)
+        # windowWidth=img.shape[1]
+        # windowHeight=img.shape[0]
+        # print(windowWidth)
+        # print(windowHeight)
+
+        # 2. Find Hand Landmarks
+        img = detector.findHands(img)
+        lmList = detector.findPosition(img, draw=False)
+
+        if len(lmList)!=0:
+        
+            # print(lmList)
+
+            # tip of index and middle fingers
+            x1,y1 = lmList[8][1:]
+            x2,y2 = lmList[12][1:]
+
+            # 3. Check which fingers are up
+            fingers = detector.fingersUp()
+            # print(fingers)
+
+
+            # 4. If selection Mode - 2 fingers are up
+            if fingers[1] and fingers[2]:
+                xp,yp =0,0
+                print("Selection Mode")
+                #Checking for the click
+                if y1 < 120:
+                    if 100<x1<200:
+                        header = overlayList[0]
+                        drawColor= (0,0,255) #red
+                    elif 250<x1<350:
+                        header = overlayList[1]
+                        drawColor= (0,165,255) #orange
+                    elif 400<x1<500:
+                        header = overlayList[2]
+                        drawColor = (255,0,0) #blue
+                    elif 500<x1<639:
+                        header = overlayList[3]
+                        drawColor = (0,0,0) #eraser
+                cv2.rectangle(img,(x1,y1-25),(x2,y2+25),drawColor,cv2.FILLED)
+
+            # 5. If Drawing Mode - Index finger is up
+
+            if fingers[1] and fingers[2] == False:
+                cv2.circle(img,(x1,y1),15,drawColor,cv2.FILLED)
+                print("Drawing Mode")
+                if xp==0 and yp==0:
+                    xp,yp = x1,y1
+
+                if drawColor ==(0,0,0):
+                    cv2.line(img,(xp,yp),(x1,y1),drawColor,eraserThickness)
+                    cv2.line(imgCanvas,(xp,yp),(x1,y1),drawColor,eraserThickness)
+                else:  
+                    cv2.line(img,(xp,yp),(x1,y1),drawColor,brushThickness)
+                    cv2.line(imgCanvas,(xp,yp),(x1,y1),drawColor,brushThickness)
+
+                xp,yp = x1,y1
+    
+        imgGray = cv2.cvtColor(imgCanvas,cv2.COLOR_BGR2GRAY)
+        _, imgInv = cv2.threshold(imgGray,50,255,cv2.THRESH_BINARY_INV)        
+        imgInv =cv2.cvtColor(imgInv,cv2.COLOR_GRAY2BGR)
+        img = cv2.bitwise_and(img,imgInv)
+        img = cv2.bitwise_or(img,imgCanvas)
+
+        #setting the header image
+        img[0:120,0:639]=header
+        cv2.imshow("Image",img)
+        cv2.imshow("Canvas",imgCanvas)
+
+        if cv2.waitKey(5) == 13:  # if I press Enter it will break 
+            break
+    cap.release()
+    cv2.destroyAllWindows()
     return redirect('index')
