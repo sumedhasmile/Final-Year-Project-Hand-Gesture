@@ -9,7 +9,7 @@ import pyautogui as pg
 from . import HandTrackingModule as htm  
 
 ########################
-brushThickness =15
+brushThickness =10
 eraserThickness =100
 ########################
 # Create your views here.
@@ -114,7 +114,7 @@ def Navigate_Vedio(request):
         cv2.imshow("Contours", all_img)
 
         #Help Window
-        path = r'F:\Final Year Project\Hand Gesture3\help-vedio.jpg'
+        path = r'F:\Final Year Project\Hand-Gesture-Web\hand_gesture_app\gesture_app\Header\help-vedio.jpg'
         image = cv2.imread(path)
         help = 'image'
         cv2.resizeWindow(help,247,349)
@@ -214,7 +214,7 @@ def Navigate_Player(request):
         all_img = np.hstack((drawing, crop_img))
         cv2.imshow("Contours", all_img)
         #Help Window
-        path = r'F:\Final Year Project\Hand Gesture3\help-presentation.jpg'
+        path = r'F:\Final Year Project\Hand-Gesture-Web\hand_gesture_app\gesture_app\Header\help-presentation.jpg'
         image = cv2.imread(path)
         help = 'image'
         cv2.resizeWindow(help,240,289)
@@ -325,6 +325,13 @@ def PaintWindow(request):
         img[0:120,0:639]=header
         cv2.imshow("Image",img)
         cv2.imshow("Canvas",imgCanvas)
+
+        #Help Window
+        path = r'F:\Final Year Project\Hand-Gesture-Web\hand_gesture_app\gesture_app\Header\help-paint.jpg'
+        image = cv2.imread(path)
+        help = 'image'
+        cv2.resizeWindow(help,295,273)
+        cv2.imshow(help, image)
 
         if cv2.waitKey(5) == 13:  # if I press Enter it will break 
             break
