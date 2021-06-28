@@ -230,16 +230,16 @@ def Navigate_Player(request):
 
 def PaintWindow(request):
 
-######################
+
 
     folderPath = "F:\Final Year Project\Hand-Gesture-Web\hand_gesture_app\gesture_app\Header"
     myList = os.listdir(folderPath)
-    print(myList)
+    # print(myList)
     overlayList =[]
     for imPath in myList:
         image = cv2.imread(f'{folderPath}/{imPath}')
         overlayList.append(image)
-    print(len(overlayList))
+    # print(len(overlayList))
     header = overlayList[0]
 
     drawColor = (0,0,255)
@@ -281,7 +281,7 @@ def PaintWindow(request):
             # 4. If selection Mode - 2 fingers are up
             if fingers[1] and fingers[2]:
                 xp,yp =0,0
-                print("Selection Mode")
+                # print("Selection Mode")
                 #Checking for the click
                 if y1 < 120:
                     if 100<x1<200:
@@ -302,7 +302,7 @@ def PaintWindow(request):
 
             if fingers[1] and fingers[2] == False:
                 cv2.circle(img,(x1,y1),15,drawColor,cv2.FILLED)
-                print("Drawing Mode")
+                # print("Drawing Mode")
                 if xp==0 and yp==0:
                     xp,yp = x1,y1
 
