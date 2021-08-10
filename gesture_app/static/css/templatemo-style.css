@@ -834,6 +834,9 @@ header {
   letter-spacing: 0.5px;
   margin-bottom: 15px;
 }
+#blog .item img  {
+ align-items: left;
+}
 
 #blog .item .text-content .accent-button {
   margin-top: 25px;

@@ -4,7 +4,6 @@ from django.shortcuts import redirect, render
 import cv2
 import os
 import numpy as np
-import math
 import pyautogui as pg
 from . import HandTrackingModule as htm  
 
@@ -33,7 +32,6 @@ def Navigate_Vedio(request):
 
     folderPath = "F:\Final Year Project\Hand-Gesture-Web\hand_gesture_app\gesture_app\FingerImages"
     myList = os.listdir(folderPath)
-    print(myList)
     overlayList =[]
     for imPath in myList:
         image = cv2.imread(f'{folderPath}/{imPath}')
@@ -101,10 +99,6 @@ def Navigate_Vedio(request):
         help = 'image'
         cv2.resizeWindow(help,247,349)
         cv2.imshow(help, image)
-        # cTime = time.time()
-        # fps = 1/(cTime-pTime)
-        # pTime = cTime
-        # cv2.putText(img,f'FPS: {int(fps)}',(400,70),cv2.FONT_HERSHEY_PLAIN,3, (255,0,0),3)
 
         
 
@@ -194,7 +188,7 @@ def Navigate_Player(request):
         cv2.imshow(help, image)
         cv2.imshow("Image",img)
 
-        if cv2.waitKey(5) == 13:  # if I press Enter it will break 
+        if cv2.waitKey(5) == 13:  # Press enter to close window 
             break
     cap.release()
     cv2.destroyAllWindows()        
@@ -226,10 +220,6 @@ def PaintWindow(request):
         # 1. Import Image
         success,img = cap.read()
         img = cv2.flip(img,1)
-        # windowWidth=img.shape[1]
-        # windowHeight=img.shape[0]
-        # print(windowWidth)
-        # print(windowHeight)
 
         # 2. Find Hand Landmarks
         img = detector.findHands(img)
@@ -237,7 +227,6 @@ def PaintWindow(request):
 
         if len(lmList)!=0:
         
-            # print(lmList)
 
             # tip of index and middle fingers
             x1,y1 = lmList[8][1:]
@@ -245,13 +234,12 @@ def PaintWindow(request):
 
             # 3. Check which fingers are up
             fingers = detector.fingersUp()
-            # print(fingers)
 
 
             # 4. If selection Mode - 2 fingers are up
             if fingers[1] and fingers[2]:
                 xp,yp =0,0
-                # print("Selection Mode")
+
                 #Checking for the click
                 if y1 < 120:
                     if 100<x1<200:
